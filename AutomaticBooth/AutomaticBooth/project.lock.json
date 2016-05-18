@@ -335,6 +335,15 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtCognitiveAPIWrapper/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        }
+      },
       "mtPhotoBoothLibrary/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -2300,6 +2309,15 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtCognitiveAPIWrapper/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        }
+      },
       "mtPhotoBoothLibrary/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -4115,6 +4133,15 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtCognitiveAPIWrapper/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        }
+      },
       "mtPhotoBoothLibrary/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -5926,6 +5953,15 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "mtCognitiveAPIWrapper/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
         }
       },
       "mtPhotoBoothLibrary/1.0.0": {
@@ -7743,6 +7779,15 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtCognitiveAPIWrapper/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        }
+      },
       "mtPhotoBoothLibrary/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -9554,6 +9599,15 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "mtCognitiveAPIWrapper/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
         }
       },
       "mtPhotoBoothLibrary/1.0.0": {
@@ -11369,6 +11423,15 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "mtCognitiveAPIWrapper/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/CognitiveAPIWrapper.dll": {}
         }
       },
       "mtPhotoBoothLibrary/1.0.0": {
@@ -13672,6 +13735,17 @@
         "ref/net46/Microsoft.Win32.Primitives.dll",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._"
+      ]
+    },
+    "mtCognitiveAPIWrapper/1.0.0": {
+      "sha512": "C+5xfufGtE3K8vVT7uHiGlT++diBAZqETiFkQYKS9NkJkhxV8dsZsAI2KsMxawuq2jdWU3NbcPwltNDF8syaTQ==",
+      "type": "package",
+      "files": [
+        "lib/NetCore50/CognitiveAPIWrapper.dll",
+        "lib/NetCore50/CognitiveAPIWrapper.pri",
+        "lib/NetCore50/CognitiveAPIWrapper/properties/CognitiveAPIWrapper.rd.xml",
+        "mtCognitiveAPIWrapper.1.0.0.nupkg.sha512",
+        "mtCognitiveAPIWrapper.nuspec"
       ]
     },
     "mtPhotoBoothLibrary/1.0.0": {
@@ -16231,6 +16305,7 @@
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "Microsoft.ProjectOxford.Emotion >= 1.0.251",
       "Microsoft.ProjectOxford.Face >= 1.1.0",
+      "mtCognitiveAPIWrapper >= 1.0.0",
       "mtPhotoBoothLibrary >= 1.0.0"
     ],
     "UAP,Version=v10.0": []

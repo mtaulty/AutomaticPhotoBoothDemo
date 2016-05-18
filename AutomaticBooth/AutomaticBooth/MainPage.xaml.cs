@@ -1,5 +1,7 @@
 ﻿namespace AutomaticBooth
 {
+  using CognitiveAPIWrapper.Audio;
+  using CognitiveAPIWrapper.SpeakerVerification;
   using Microsoft.ProjectOxford.Emotion;
   using Microsoft.ProjectOxford.Face;
   using PhotoControlLibrary;
@@ -17,6 +19,7 @@
   using Windows.Storage;
   using Windows.UI;
   using Windows.UI.Input.Inking;
+  using Windows.UI.Popups;
   using Windows.UI.Xaml.Controls;
   using Windows.UI.Xaml.Input;
   using Windows.UI.Xaml.Media;
@@ -40,10 +43,6 @@
       {
         await this.photoControl.ShowFilteredGridAsync(filter);
       }
-    }
-    public async Task<bool> AuthoriseUseAsync()
-    {
-      return (true);
     }
     async Task StartListeningForCheeseAsync()
     {
@@ -343,16 +342,6 @@
       this.photoControl.RemoveOverlayFromDisplayedPhoto(this.inkOverlay);
       this.inkOverlay = null;
     }
-    FaceDetector faceDetector;
-    SpeechSynthesisStream speechMediaStream;
-    MediaElement mediaElementForSpeech;
-    SpeechSynthesizer speechSynthesizer;
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    InkCanvas inkOverlay;
-    InkRecognizerContainer inkRecognizer;
-    #endregion // ALREADY_SEEN_THIS_CODE
-
     async Task SaveInkToFileAsync()
     {
       if (this.inkOverlay.InkPresenter.StrokeContainer.GetStrokes().Count > 0)
@@ -395,5 +384,51 @@
       this.RemoveLayerForManipulations();
     }
     string InkStorageFileName => $"{this.currentPhotoId}.ink";
+    FaceDetector faceDetector;
+    SpeechSynthesisStream speechMediaStream;
+    MediaElement mediaElementForSpeech;
+    SpeechSynthesizer speechSynthesizer;
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    InkCanvas inkOverlay;
+    InkRecognizerContainer inkRecognizer;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    public async Task<bool> AuthoriseUseAsync()
+    {
+      // We ask the user to repeat a phrase.
+      var dialog = new MessageDialog(
+        "dismiss this dialog then repeat the verification phrase\n" +
+        "'my voice is my passport, verify me'",
+        "voice verification required");
+
+      await dialog.ShowAsync();
+
+      // This GUID is my (free, trial) API key, please don't steal it :-)
+      VerificationClient verificationClient =
+        new VerificationClient("8bfa384b6ca64ded9069a07f3c60510f");
+
+      // Record me speaking for 5 seconds, using class from my own
+      // library which sits on AudioGraph APIs.
+      var speechFile =
+        await CognitiveAudioGraphRecorder.RecordToTemporaryFileAsync(
+          TimeSpan.FromSeconds(5));
+
+      // I have already registered my voice speaking this phrase with
+      // the cloud and I got back this GUID. I had to repeat it 3 
+      // times.
+      // Send our speech to the cloud to check for a match.
+      var verificationResult =
+        await verificationClient.VerifyRecordedSpeechForProfileIdAsync(
+          Guid.Parse("7cf0f0a8-c6a2-4fe0-b806-5272f89e00c8"),
+          speechFile);
+
+      // did it work?
+      var authorised =
+        (verificationResult.Result == VerificationStatus.Accept) &&
+        (verificationResult.Confidence == Confidence.High);
+
+      return (authorised);
+    }
   }
 }
