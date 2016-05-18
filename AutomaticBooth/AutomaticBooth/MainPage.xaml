@@ -8,6 +8,8 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <p:PhotoControl
+            xmlns:p="using:PhotoControlLibrary"
+            x:Name="photoControl" />
     </Grid>
 </Page>
