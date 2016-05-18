@@ -16,6 +16,7 @@
   using Windows.Media.SpeechSynthesis;
   using Windows.Storage;
   using Windows.UI;
+  using Windows.UI.Input.Inking;
   using Windows.UI.Xaml.Controls;
   using Windows.UI.Xaml.Input;
   using Windows.UI.Xaml.Media;
@@ -316,7 +317,42 @@
 
       this.inkOverlay.ManipulationDelta += OnManipulationDelta;
 
+      var presentation = this.inkOverlay.InkPresenter.CopyDefaultDrawingAttributes();
+      presentation.Color = Colors.Yellow;
+      presentation.Size = new Size(2, 2);
+      this.inkOverlay.InkPresenter.UpdateDefaultDrawingAttributes(presentation);
+
+      this.inkOverlay.InkPresenter.StrokesCollected += OnStrokesCollected;
+
       this.photoControl.AddOverlayToDisplayedPhoto(this.inkOverlay);
+    }
+
+    async void OnStrokesCollected(
+      InkPresenter sender,
+      InkStrokesCollectedEventArgs args)
+    {
+      // create the ink recognizer if we haven't done already.
+      if (this.inkRecognizer == null)
+      {
+        this.inkRecognizer = new InkRecognizerContainer();
+      }
+      // recognise the ink which has not already been recognised
+      // (i.e. do incremental ink recognition).
+      var results = await this.inkRecognizer.RecognizeAsync(
+        sender.StrokeContainer,
+        InkRecognitionTarget.Recent);
+
+      // update the container so that it knows next time that this
+      // ink is already recognised.
+      sender.StrokeContainer.UpdateRecognitionResults(results);
+
+      // we take all the top results that the recogniser gives us
+      // back.
+      var newTags = results.Select(
+        result => result.GetTextCandidates().FirstOrDefault());
+
+      // add the new tags to our photo.
+      await this.photoControl.AddTagsToPhotoAsync(this.currentPhotoId, newTags);
     }
     void RemoveLayerForManipulations()
     {
@@ -325,6 +361,6 @@
       this.inkOverlay = null;
     }
     InkCanvas inkOverlay;
-
+    InkRecognizerContainer inkRecognizer;
   }
 }
