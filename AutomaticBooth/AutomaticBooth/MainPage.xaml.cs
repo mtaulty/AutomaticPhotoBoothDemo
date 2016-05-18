@@ -105,27 +105,6 @@
     {
       this.RemoveLayerForManipulations();
     }
-
-    void AddLayerForManipulations()
-    {
-      this.overlayGrid = new Grid()
-      {
-        ManipulationMode =
-          ManipulationModes.Rotate |
-          ManipulationModes.Scale,
-        Background = new SolidColorBrush(Colors.Transparent)
-      };
-
-      this.overlayGrid.ManipulationDelta += OnManipulationDelta;
-
-      this.photoControl.AddOverlayToDisplayedPhoto(this.overlayGrid);
-    }
-    void RemoveLayerForManipulations()
-    {
-      this.overlayGrid.ManipulationDelta -= this.OnManipulationDelta;
-      this.photoControl.RemoveOverlayFromDisplayedPhoto(this.overlayGrid);
-      this.overlayGrid = null;
-    }
     void OnManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
     {
       this.photoControl.UpdatePhotoTransform(e.Delta);
@@ -296,14 +275,6 @@
         }
       }
     }
-    SpeechSynthesisStream speechMediaStream;
-    MediaElement mediaElementForSpeech;
-    SpeechSynthesizer speechSynthesizer;
-    Grid overlayGrid;
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
-
     public async Task<Rect?> ProcessCameraFrameAsync(SoftwareBitmap bitmap)
     {
       if (this.faceDetector == null)
@@ -327,5 +298,33 @@
       return (returnValue);
     }
     FaceDetector faceDetector;
+    SpeechSynthesisStream speechMediaStream;
+    MediaElement mediaElementForSpeech;
+    SpeechSynthesizer speechSynthesizer;
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    void AddLayerForManipulations()
+    {
+      this.inkOverlay = new InkCanvas()
+      {
+        ManipulationMode =
+          ManipulationModes.Rotate |
+          ManipulationModes.Scale
+      };
+
+      this.inkOverlay.ManipulationDelta += OnManipulationDelta;
+
+      this.photoControl.AddOverlayToDisplayedPhoto(this.inkOverlay);
+    }
+    void RemoveLayerForManipulations()
+    {
+      this.inkOverlay.ManipulationDelta -= this.OnManipulationDelta;
+      this.photoControl.RemoveOverlayFromDisplayedPhoto(this.inkOverlay);
+      this.inkOverlay = null;
+    }
+    InkCanvas inkOverlay;
+
   }
 }
