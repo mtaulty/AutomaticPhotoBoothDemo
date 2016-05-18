@@ -268,6 +268,27 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtPhotoBoothLibrary/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.3"
+        },
+        "compile": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        }
+      },
+      "Newtonsoft.Json/8.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        }
+      },
       "System.AppContext/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -2145,6 +2166,27 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtPhotoBoothLibrary/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.3"
+        },
+        "compile": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        }
+      },
+      "Newtonsoft.Json/8.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        }
+      },
       "System.AppContext/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -3872,6 +3914,27 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtPhotoBoothLibrary/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.3"
+        },
+        "compile": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        }
+      },
+      "Newtonsoft.Json/8.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        }
+      },
       "System.AppContext/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -5595,6 +5658,27 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "mtPhotoBoothLibrary/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.3"
+        },
+        "compile": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        }
+      },
+      "Newtonsoft.Json/8.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -7324,6 +7408,27 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "mtPhotoBoothLibrary/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.3"
+        },
+        "compile": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        }
+      },
+      "Newtonsoft.Json/8.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        }
+      },
       "System.AppContext/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -9047,6 +9152,27 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "mtPhotoBoothLibrary/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.3"
+        },
+        "compile": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        }
+      },
+      "Newtonsoft.Json/8.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -10774,6 +10900,27 @@
         },
         "runtime": {
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
+        }
+      },
+      "mtPhotoBoothLibrary/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "8.0.3"
+        },
+        "compile": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        },
+        "runtime": {
+          "lib/NetCore50/PhotoControlLibrary.dll": {}
+        }
+      },
+      "Newtonsoft.Json/8.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -12856,6 +13003,42 @@
         "ref/net46/Microsoft.Win32.Primitives.dll",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._"
+      ]
+    },
+    "mtPhotoBoothLibrary/1.0.0": {
+      "sha512": "3bDp83eRdYe0G/EYKbVCBIf5EcYD425fTTezWJTab8kouX2jkWYLYLONDPKngxsvzF+LM3ejOk863IH/BOuqlg==",
+      "type": "package",
+      "files": [
+        "lib/NetCore50/PhotoControlLibrary.dll",
+        "lib/NetCore50/PhotoControlLibrary.pri",
+        "lib/NetCore50/PhotoControlLibrary/PhotoCaptureControl.xbf",
+        "lib/NetCore50/PhotoControlLibrary/PhotoControl.xbf",
+        "lib/NetCore50/PhotoControlLibrary/PhotoControlLibrary.xr.xml",
+        "lib/NetCore50/PhotoControlLibrary/PhotoGridControl.xbf",
+        "lib/NetCore50/PhotoControlLibrary/properties/PhotoControlLibrary.rd.xml",
+        "mtPhotoBoothLibrary.1.0.0.nupkg.sha512",
+        "mtPhotoBoothLibrary.nuspec"
+      ]
+    },
+    "Newtonsoft.Json/8.0.3": {
+      "sha512": "KGsYQdS2zLH+H8x2cZaSI7e+YZ4SFIbyy1YJQYl6GYBWjf5o4H1A68nxyq+WTyVSOJQ4GqS/DiPE+UseUizgMg==",
+      "type": "package",
+      "files": [
+        "Newtonsoft.Json.8.0.3.nupkg.sha512",
+        "Newtonsoft.Json.nuspec",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
+        "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll",
+        "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.xml",
+        "tools/install.ps1"
       ]
     },
     "System.AppContext/4.0.0": {
@@ -15376,7 +15559,8 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0"
+      "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
+      "mtPhotoBoothLibrary >= 1.0.0"
     ],
     "UAP,Version=v10.0": []
   }
