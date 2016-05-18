@@ -1,8 +1,10 @@
 ﻿namespace AutomaticBooth
 {
   using Microsoft.ProjectOxford.Emotion;
+  using Microsoft.ProjectOxford.Face;
   using PhotoControlLibrary;
   using System;
+  using System.Collections.Generic;
   using System.IO;
   using System.Linq;
   using System.Reflection;
@@ -171,14 +173,6 @@
         }
       );
     }
-    SpeechSynthesisStream speechMediaStream;
-    MediaElement mediaElementForSpeech;
-    SpeechSynthesizer speechSynthesizer;
-    Grid overlayGrid;
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
-
     async Task AddEmotionBasedTagsToPhotoAsync(PhotoResult photoResult)
     {
       // The proxy that makes it easier to call the REST API.
@@ -220,6 +214,57 @@
         }
       }
     }
+    SpeechSynthesisStream speechMediaStream;
+    MediaElement mediaElementForSpeech;
+    SpeechSynthesizer speechSynthesizer;
+    Grid overlayGrid;
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    async Task AddFaceBasedTagsToPhotoAsync(PhotoResult photoResult)
+    {
+      FaceServiceClient client = new FaceServiceClient(
+        "76811b8d4dd64b9bb54366502b0615cc");
+
+      using (var stream = await photoResult.PhotoFile.OpenStreamForReadAsync())
+      {
+        var attributes = new FaceAttributeType[]
+        {
+          FaceAttributeType.Age,
+          FaceAttributeType.FacialHair,
+          FaceAttributeType.Gender,
+          FaceAttributeType.Glasses,
+          FaceAttributeType.Smile
+        };
+        var results = await client.DetectAsync(stream, true, false, attributes);
+
+        var firstFace = results?.FirstOrDefault();
+
+        if (firstFace != null)
+        {
+          var automaticTags = new List<string>();
+          automaticTags.Add($"age {firstFace.FaceAttributes.Age}");
+          automaticTags.Add(firstFace.FaceAttributes.Gender.ToString());
+          automaticTags.Add(firstFace.FaceAttributes.Glasses.ToString());
+
+          Action<double, string> compareFunc =
+            (double value, string name) =>
+            {
+              if (value > 0.5) automaticTags.Add(name);
+            };
+
+          compareFunc(firstFace.FaceAttributes.Smile, "smile");
+          compareFunc(firstFace.FaceAttributes.FacialHair.Beard, "beard");
+          compareFunc(firstFace.FaceAttributes.FacialHair.Moustache, "moustache");
+          compareFunc(firstFace.FaceAttributes.FacialHair.Sideburns, "sideburns");
+
+          await this.photoControl.AddTagsToPhotoAsync(
+            photoResult.PhotoId, automaticTags);
+        }
+      }
+    }
+
     async void OnSpeechResult(
       SpeechContinuousRecognitionSession sender,
       SpeechContinuousRecognitionResultGeneratedEventArgs args)
@@ -253,8 +298,8 @@
 
               if (photoResult != null)
               {
+                await this.AddFaceBasedTagsToPhotoAsync(photoResult);
                 await this.AddEmotionBasedTagsToPhotoAsync(photoResult);
-
                 await this.SpeakAsync("That's lovely, you look great!");
               }
             }
