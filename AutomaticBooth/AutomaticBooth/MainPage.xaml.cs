@@ -97,15 +97,6 @@
       await this.StartListeningForConstraintAsync(
         new SpeechRecognitionGrammarFileConstraint(grammarFile));
     }
-    public async Task OnOpeningPhotoAsync(Guid photo)
-    {
-      this.currentPhotoId = photo;
-      this.AddLayerForManipulations();
-    }
-    public async Task OnClosingPhotoAsync(Guid photo)
-    {
-      this.RemoveLayerForManipulations();
-    }
     void OnManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
     {
       this.photoControl.UpdatePhotoTransform(e.Delta);
@@ -298,14 +289,6 @@
       }
       return (returnValue);
     }
-    FaceDetector faceDetector;
-    SpeechSynthesisStream speechMediaStream;
-    MediaElement mediaElementForSpeech;
-    SpeechSynthesizer speechSynthesizer;
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
-
     void AddLayerForManipulations()
     {
       this.inkOverlay = new InkCanvas()
@@ -360,7 +343,57 @@
       this.photoControl.RemoveOverlayFromDisplayedPhoto(this.inkOverlay);
       this.inkOverlay = null;
     }
+    FaceDetector faceDetector;
+    SpeechSynthesisStream speechMediaStream;
+    MediaElement mediaElementForSpeech;
+    SpeechSynthesizer speechSynthesizer;
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
     InkCanvas inkOverlay;
     InkRecognizerContainer inkRecognizer;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    async Task SaveInkToFileAsync()
+    {
+      if (this.inkOverlay.InkPresenter.StrokeContainer.GetStrokes().Count > 0)
+      {
+        var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(
+          this.InkStorageFileName, CreationCollisionOption.ReplaceExisting);
+
+        using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
+        {
+          await this.inkOverlay.InkPresenter.StrokeContainer.SaveAsync(stream);
+        }
+      }
+    }
+    async Task LoadInkFromFileAsync()
+    {
+      try
+      {
+        var file = await ApplicationData.Current.LocalFolder.GetFileAsync(
+          this.InkStorageFileName);
+
+        using (var stream = await file.OpenReadAsync())
+        {
+          await this.inkOverlay.InkPresenter.StrokeContainer.LoadAsync(stream);
+        }
+      }
+      catch (FileNotFoundException)
+      {
+
+      }
+    }
+    public async Task OnOpeningPhotoAsync(Guid photo)
+    {
+      this.currentPhotoId = photo;
+      this.AddLayerForManipulations();
+      await this.LoadInkFromFileAsync();
+    }
+    public async Task OnClosingPhotoAsync(Guid photo)
+    {
+      await this.SaveInkToFileAsync();
+      this.RemoveLayerForManipulations();
+    }
+    string InkStorageFileName => $"{this.currentPhotoId}.ink";
   }
 }
