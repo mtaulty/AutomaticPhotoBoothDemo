@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+
+  <CommandSet xml:lang="en-gb">
+
+    <CommandPrefix>photo booth, </CommandPrefix>
+
+    <Example>show me photos with smiles</Example>
+
+    <Command Name="filter">
+      <Example>show me photos with smiles</Example>
+      <ListenFor>[show me photos with] {dictatedSearchTerms}</ListenFor>
+      <Feedback>looking through the photos now for {dictatedSearchTerms}, one second</Feedback>
+      <Navigate Target="MainPage.xaml"/>
+    </Command>
+    <PhraseTopic Label="dictatedSearchTerms" Scenario="Dictation">
+    </PhraseTopic>
+  </CommandSet>
+
+</VoiceCommands>

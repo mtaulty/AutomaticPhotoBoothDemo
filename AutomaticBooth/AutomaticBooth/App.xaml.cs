@@ -1,6 +1,9 @@
 ﻿namespace AutomaticBooth
 {
+  using System;
   using Windows.ApplicationModel.Activation;
+  using Windows.ApplicationModel.VoiceCommands;
+  using Windows.Storage;
   using Windows.UI.Xaml;
   using Windows.UI.Xaml.Controls;
 
@@ -11,8 +14,15 @@
       this.InitializeComponent();
     }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs e)
+    protected async override void OnLaunched(LaunchActivatedEventArgs e)
     {
+      var storageFile =
+        await StorageFile.GetFileFromApplicationUriAsync(
+          new Uri("ms-appx:///commands.xml"));
+
+      await VoiceCommandDefinitionManager.InstallCommandDefinitionsFromStorageFileAsync(
+        storageFile);
+
       EnsureUICreated(e.PrelaunchActivated);
     }
     private static void EnsureUICreated(bool prelaunchActivated)
@@ -43,5 +53,27 @@
         Window.Current.Activate();
       }
     }
+
+    protected override void OnActivated(IActivatedEventArgs args)
+    {
+      base.OnActivated(args);
+
+      if (args.Kind == ActivationKind.VoiceCommand)
+      {
+        // NB: We are not really coping with the scenario where the app is already
+        // on the screen (we should, it just takes a bit more code).
+        VoiceCommandActivatedEventArgs voiceArgs = (VoiceCommandActivatedEventArgs)args;
+
+        var properties = voiceArgs.Result?.SemanticInterpretation?.Properties;
+        var dictation = properties?["dictatedSearchTerms"];
+
+        if (dictation != null)
+        {
+          this.WaitingFilter = dictation[0];
+        }
+      }
+      EnsureUICreated(false);
+    }
+    public string WaitingFilter { get; set; }
   }
 }

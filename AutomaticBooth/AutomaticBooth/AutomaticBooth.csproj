@@ -107,6 +107,9 @@
     <None Include="AutomaticBooth_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="commands.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="grammar.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

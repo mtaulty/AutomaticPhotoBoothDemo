@@ -18,11 +18,6 @@
       this.InitializeComponent();
       this.Loaded += OnLoaded;
     }
-    async void OnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-    {
-      // this won't work, it's just to get us to compile.
-      await this.photoControl.InitialiseAsync(this);
-    }
 
     public async Task OnOpeningPhotoAsync(Guid photo)
     {
@@ -66,9 +61,6 @@
 
       await this.speechRecognizer.ContinuousRecognitionSession.StartAsync();
     }
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
     public async Task OnModeChangedAsync(PhotoControlMode newMode)
     {
       switch (newMode)
@@ -131,6 +123,22 @@
             }
           );
         }
+      }
+    }
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    async void OnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+    {
+      // this won't work, it's just to get us to compile.
+      await this.photoControl.InitialiseAsync(this);
+
+      var filter = ((App)App.Current).WaitingFilter;
+
+      if (!string.IsNullOrEmpty(filter))
+      {
+        await this.photoControl.ShowFilteredGridAsync(filter);
       }
     }
   }
