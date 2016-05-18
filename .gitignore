@@ -40,7 +40,6 @@ TestResult.xml
 dlldata.c
 
 # DNX
-project.lock.json
 artifacts/
 
 *_i.c
@@ -143,7 +142,7 @@ publish/
 *.publishproj
 
 # NuGet Packages
-*.nupkg
+
 # The packages folder can be ignored because of Package Restore
 **/packages/*
 # except build/, which is used as an MSBuild target.
