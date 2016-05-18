@@ -8,8 +8,10 @@
   using Windows.Graphics.Imaging;
   using Windows.Media.SpeechRecognition;
   using Windows.Storage;
+  using Windows.UI;
   using Windows.UI.Xaml.Controls;
-
+  using Windows.UI.Xaml.Input;
+  using Windows.UI.Xaml.Media;
   public sealed partial class MainPage : Page, IPhotoControlHandler
   {
     #region ALREADY_SEEN_THIS_CODE
@@ -18,13 +20,17 @@
       this.InitializeComponent();
       this.Loaded += OnLoaded;
     }
+    async void OnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+    {
+      // this won't work, it's just to get us to compile.
+      await this.photoControl.InitialiseAsync(this);
 
-    public async Task OnOpeningPhotoAsync(Guid photo)
-    {
-      this.currentPhotoId = photo;
-    }
-    public async Task OnClosingPhotoAsync(Guid photo)
-    {
+      var filter = ((App)App.Current).WaitingFilter;
+
+      if (!string.IsNullOrEmpty(filter))
+      {
+        await this.photoControl.ShowFilteredGridAsync(filter);
+      }
     }
     public async Task<Rect?> ProcessCameraFrameAsync(SoftwareBitmap bitmap)
     {
@@ -129,17 +135,40 @@
     Guid currentPhotoId;
     #endregion // ALREADY_SEEN_THIS_CODE
 
-    async void OnLoaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+    public async Task OnOpeningPhotoAsync(Guid photo)
     {
-      // this won't work, it's just to get us to compile.
-      await this.photoControl.InitialiseAsync(this);
-
-      var filter = ((App)App.Current).WaitingFilter;
-
-      if (!string.IsNullOrEmpty(filter))
-      {
-        await this.photoControl.ShowFilteredGridAsync(filter);
-      }
+      this.currentPhotoId = photo;
+      this.AddLayerForManipulations();
     }
+    public async Task OnClosingPhotoAsync(Guid photo)
+    {
+      this.RemoveLayerForManipulations();
+    }
+
+    void AddLayerForManipulations()
+    {
+      this.overlayGrid = new Grid()
+      {
+        ManipulationMode =
+          ManipulationModes.Rotate |
+          ManipulationModes.Scale,
+        Background = new SolidColorBrush(Colors.Transparent)
+      };
+
+      this.overlayGrid.ManipulationDelta += OnManipulationDelta;
+
+      this.photoControl.AddOverlayToDisplayedPhoto(this.overlayGrid);
+    }
+    void RemoveLayerForManipulations()
+    {
+      this.overlayGrid.ManipulationDelta -= this.OnManipulationDelta;
+      this.photoControl.RemoveOverlayFromDisplayedPhoto(this.overlayGrid);
+      this.overlayGrid = null;
+    }
+    void OnManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+    {
+      this.photoControl.UpdatePhotoTransform(e.Delta);
+    }
+    Grid overlayGrid;
   }
 }
