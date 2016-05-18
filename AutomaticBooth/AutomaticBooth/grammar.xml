@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<grammar
+  version="1.0"
+  mode="voice"
+  xml:lang="en-GB"
+  tag-format="semantics/1.0"
+  xmlns="http://www.w3.org/2001/06/grammar"
+  root="filter">
+  <rule id="filter">
+    <ruleref uri="#intro"/>
+    <ruleref uri="#emotion"/>
+    <tag>out.emotion=rules.latest();</tag>
+    <ruleref uri="#politeness"/>
+  </rule>
+  <rule id="intro">
+    <item>
+      <one-of>
+        <item>filter to</item>
+        <item>show only</item>
+        <item>restrict to</item>
+      </one-of>
+    </item>
+  </rule>
+  <rule id="emotion">
+    <item>
+      <one-of>
+        <item>happiness</item>
+        <item>surprise</item>
+        <item>neutral</item>
+        <item>anger</item>
+        <item>contempt</item>
+        <item>disgust</item>
+        <item>sadness</item>
+        <item>fear</item>
+      </one-of>
+    </item>
+  </rule>
+  <rule id="politeness">
+    <item repeat="0-1">
+      please
+    </item>    
+  </rule>
+</grammar>

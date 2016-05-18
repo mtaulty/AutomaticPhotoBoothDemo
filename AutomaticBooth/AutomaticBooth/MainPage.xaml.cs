@@ -2,10 +2,12 @@
 {
   using PhotoControlLibrary;
   using System;
+  using System.Linq;
   using System.Threading.Tasks;
   using Windows.Foundation;
   using Windows.Graphics.Imaging;
   using Windows.Media.SpeechRecognition;
+  using Windows.Storage;
   using Windows.UI.Xaml.Controls;
 
   public sealed partial class MainPage : Page, IPhotoControlHandler
@@ -37,24 +39,6 @@
     {
       return (true);
     }
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
-    public async Task OnModeChangedAsync(PhotoControlMode newMode)
-    {
-      switch (newMode)
-      {
-        case PhotoControlMode.Unauthorised:
-          break;
-        case PhotoControlMode.Grid:
-          break;
-        case PhotoControlMode.Capture:
-          await this.StartListeningForCheeseAsync();
-          break;
-        default:
-          break;
-      }
-    }
-
     async Task StartListeningForCheeseAsync()
     {
       await this.StartListeningForConstraintAsync(
@@ -67,7 +51,7 @@
       {
         this.speechRecognizer = new SpeechRecognizer();
 
-        this.speechRecognizer.ContinuousRecognitionSession.ResultGenerated 
+        this.speechRecognizer.ContinuousRecognitionSession.ResultGenerated
           += OnSpeechResult;
       }
       else
@@ -82,15 +66,58 @@
 
       await this.speechRecognizer.ContinuousRecognitionSession.StartAsync();
     }
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    #endregion // ALREADY_SEEN_THIS_CODE
+    public async Task OnModeChangedAsync(PhotoControlMode newMode)
+    {
+      switch (newMode)
+      {
+        case PhotoControlMode.Unauthorised:
+          break;
+        case PhotoControlMode.Grid:
+          await this.StartListeningForFiltersAsync();
+          break;
+        case PhotoControlMode.Capture:
+          await this.StartListeningForCheeseAsync();
+          break;
+        default:
+          break;
+      }
+    }
+    async Task StartListeningForFiltersAsync()
+    {
+      var grammarFile =
+        await StorageFile.GetFileFromApplicationUriAsync(
+          new Uri("ms-appx:///grammar.xml"));
 
+      await this.StartListeningForConstraintAsync(
+        new SpeechRecognitionGrammarFileConstraint(grammarFile));
+    }
     async void OnSpeechResult(
       SpeechContinuousRecognitionSession sender,
-     SpeechContinuousRecognitionResultGeneratedEventArgs args)
+      SpeechContinuousRecognitionResultGeneratedEventArgs args)
     {
       if ((args.Result.Confidence == SpeechRecognitionConfidence.High) ||
           (args.Result.Confidence == SpeechRecognitionConfidence.Medium))
       {
-        if (args.Result.Text.ToLower() == "cheese")
+        if (args.Result?.RulePath?.FirstOrDefault() == "filter")
+        {
+          var filter =
+            args.Result.SemanticInterpretation.Properties["emotion"].FirstOrDefault();
+
+          if (!string.IsNullOrEmpty(filter))
+          {
+            await this.Dispatcher.RunAsync(
+              Windows.UI.Core.CoreDispatcherPriority.Normal,
+              async () =>
+              {
+                await this.photoControl.ShowFilteredGridAsync(filter);
+              }
+            );
+          }
+        }
+        else if (args.Result.Text.ToLower() == "cheese")
         {
           await this.Dispatcher.RunAsync(
             Windows.UI.Core.CoreDispatcherPriority.Normal,
@@ -106,6 +133,5 @@
         }
       }
     }
-    SpeechRecognizer speechRecognizer;   
   }
 }
