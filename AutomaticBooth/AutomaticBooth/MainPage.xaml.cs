@@ -7,6 +7,7 @@
   using Windows.Foundation;
   using Windows.Graphics.Imaging;
   using Windows.Media.SpeechRecognition;
+  using Windows.Media.SpeechSynthesis;
   using Windows.Storage;
   using Windows.UI;
   using Windows.UI.Xaml.Controls;
@@ -92,49 +93,6 @@
       await this.StartListeningForConstraintAsync(
         new SpeechRecognitionGrammarFileConstraint(grammarFile));
     }
-    async void OnSpeechResult(
-      SpeechContinuousRecognitionSession sender,
-      SpeechContinuousRecognitionResultGeneratedEventArgs args)
-    {
-      if ((args.Result.Confidence == SpeechRecognitionConfidence.High) ||
-          (args.Result.Confidence == SpeechRecognitionConfidence.Medium))
-      {
-        if (args.Result?.RulePath?.FirstOrDefault() == "filter")
-        {
-          var filter =
-            args.Result.SemanticInterpretation.Properties["emotion"].FirstOrDefault();
-
-          if (!string.IsNullOrEmpty(filter))
-          {
-            await this.Dispatcher.RunAsync(
-              Windows.UI.Core.CoreDispatcherPriority.Normal,
-              async () =>
-              {
-                await this.photoControl.ShowFilteredGridAsync(filter);
-              }
-            );
-          }
-        }
-        else if (args.Result.Text.ToLower() == "cheese")
-        {
-          await this.Dispatcher.RunAsync(
-            Windows.UI.Core.CoreDispatcherPriority.Normal,
-            async () =>
-            {
-              var photoResult = await this.photoControl.TakePhotoAsync();
-
-              if (photoResult != null)
-              {
-              }
-            }
-          );
-        }
-      }
-    }
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
-
     public async Task OnOpeningPhotoAsync(Guid photo)
     {
       this.currentPhotoId = photo;
@@ -170,5 +128,92 @@
       this.photoControl.UpdatePhotoTransform(e.Delta);
     }
     Grid overlayGrid;
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    async Task SpeakAsync(string text)
+    {
+      // Note, the assumption here is very much that we speak one piece of
+      // text at a time rather than have multiple in flight - that needs
+      // a different solution (with a queue).
+      await Dispatcher.RunAsync(
+        Windows.UI.Core.CoreDispatcherPriority.Normal,
+        async () =>
+        {
+          // Create the synthesizer if we need to.
+          if (this.speechSynthesizer == null)
+          {
+            // Easy create, just choosing first female voice.
+            this.speechSynthesizer = new SpeechSynthesizer()
+            {
+              Voice = SpeechSynthesizer.AllVoices.Where(
+                v => v.Gender == VoiceGender.Female).First()
+            };
+
+            // Make a media element to play the speech.
+            this.mediaElementForSpeech = new MediaElement();
+
+            // When the media ends, get rid of stream.
+            this.mediaElementForSpeech.MediaEnded += (s, e) =>
+            {
+              this.speechMediaStream?.Dispose();
+              this.speechMediaStream = null;
+            };
+          }
+          // Now, turn the text into speech.
+          this.speechMediaStream =
+            await this.speechSynthesizer.SynthesizeTextToStreamAsync(text);
+
+          this.mediaElementForSpeech.SetSource(this.speechMediaStream, string.Empty);
+
+          // Speak it.
+          this.mediaElementForSpeech.Play();
+        }
+      );
+    }
+    async void OnSpeechResult(
+      SpeechContinuousRecognitionSession sender,
+      SpeechContinuousRecognitionResultGeneratedEventArgs args)
+    {
+      if ((args.Result.Confidence == SpeechRecognitionConfidence.High) ||
+          (args.Result.Confidence == SpeechRecognitionConfidence.Medium))
+      {
+        if (args.Result?.RulePath?.FirstOrDefault() == "filter")
+        {
+          var filter =
+            args.Result.SemanticInterpretation.Properties["emotion"].FirstOrDefault();
+
+          if (!string.IsNullOrEmpty(filter))
+          {
+            await this.Dispatcher.RunAsync(
+              Windows.UI.Core.CoreDispatcherPriority.Normal,
+              async () =>
+              {
+                await this.photoControl.ShowFilteredGridAsync(filter);
+              }
+            );
+          }
+        }
+        else if (args.Result.Text.ToLower() == "cheese")
+        {
+          await this.Dispatcher.RunAsync(
+            Windows.UI.Core.CoreDispatcherPriority.Normal,
+            async () =>
+            {
+              var photoResult = await this.photoControl.TakePhotoAsync();
+
+              if (photoResult != null)
+              {
+                await this.SpeakAsync("That's lovely, you look great!");
+              }
+            }
+          );
+        }
+      }
+    }
+    SpeechSynthesisStream speechMediaStream;
+    MediaElement mediaElementForSpeech;
+    SpeechSynthesizer speechSynthesizer;
   }
 }
