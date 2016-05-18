@@ -1,8 +1,11 @@
 ﻿namespace AutomaticBooth
 {
+  using Microsoft.ProjectOxford.Emotion;
   using PhotoControlLibrary;
   using System;
+  using System.IO;
   using System.Linq;
+  using System.Reflection;
   using System.Threading.Tasks;
   using Windows.Foundation;
   using Windows.Graphics.Imaging;
@@ -13,6 +16,7 @@
   using Windows.UI.Xaml.Controls;
   using Windows.UI.Xaml.Input;
   using Windows.UI.Xaml.Media;
+
   public sealed partial class MainPage : Page, IPhotoControlHandler
   {
     #region ALREADY_SEEN_THIS_CODE
@@ -127,11 +131,6 @@
     {
       this.photoControl.UpdatePhotoTransform(e.Delta);
     }
-    Grid overlayGrid;
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
-
     async Task SpeakAsync(string text)
     {
       // Note, the assumption here is very much that we speak one piece of
@@ -172,6 +171,55 @@
         }
       );
     }
+    SpeechSynthesisStream speechMediaStream;
+    MediaElement mediaElementForSpeech;
+    SpeechSynthesizer speechSynthesizer;
+    Grid overlayGrid;
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    async Task AddEmotionBasedTagsToPhotoAsync(PhotoResult photoResult)
+    {
+      // The proxy that makes it easier to call the REST API.
+      // This is my key, please don't steal it :-)
+      EmotionServiceClient client = new EmotionServiceClient(
+        "5fa514a9e129412f9848efef5ee1e444");
+
+      // Open the photo file we just captured.
+      using (var stream = await photoResult.PhotoFile.OpenStreamForReadAsync())
+      {
+        // Call the cloud looking for emotions.
+        var results = await client.RecognizeAsync(stream);
+
+        // We're only taking the first result here.
+        var scores = results?.FirstOrDefault()?.Scores;
+
+        if (scores != null)
+        {
+          // This object has properties called Sadness, Happiness,
+          // Fear, etc. all with floating point values 0..1
+          var publicProperties = scores.GetType().GetRuntimeProperties();
+
+          // We'll have any property with a score > 0.5f.
+          var automaticTags =
+            publicProperties
+              .Where(
+                property => (float)property.GetValue(scores) > 0.5)
+              .Select(
+                property => property.Name)
+              .ToList();
+
+          if (automaticTags.Count > 0)
+          {
+            // Add them to our photo!
+            await this.photoControl.AddTagsToPhotoAsync(
+              photoResult.PhotoId,
+              automaticTags);
+          }
+        }
+      }
+    }
     async void OnSpeechResult(
       SpeechContinuousRecognitionSession sender,
       SpeechContinuousRecognitionResultGeneratedEventArgs args)
@@ -205,6 +253,8 @@
 
               if (photoResult != null)
               {
+                await this.AddEmotionBasedTagsToPhotoAsync(photoResult);
+
                 await this.SpeakAsync("That's lovely, you look great!");
               }
             }
@@ -212,8 +262,5 @@
         }
       }
     }
-    SpeechSynthesisStream speechMediaStream;
-    MediaElement mediaElementForSpeech;
-    SpeechSynthesizer speechSynthesizer;
   }
 }
