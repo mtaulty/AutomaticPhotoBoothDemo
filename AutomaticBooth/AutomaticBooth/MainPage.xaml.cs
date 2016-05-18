@@ -11,6 +11,7 @@
   using System.Threading.Tasks;
   using Windows.Foundation;
   using Windows.Graphics.Imaging;
+  using Windows.Media.FaceAnalysis;
   using Windows.Media.SpeechRecognition;
   using Windows.Media.SpeechSynthesis;
   using Windows.Storage;
@@ -38,10 +39,6 @@
       {
         await this.photoControl.ShowFilteredGridAsync(filter);
       }
-    }
-    public async Task<Rect?> ProcessCameraFrameAsync(SoftwareBitmap bitmap)
-    {
-      return (null);
     }
     public async Task<bool> AuthoriseUseAsync()
     {
@@ -214,14 +211,6 @@
         }
       }
     }
-    SpeechSynthesisStream speechMediaStream;
-    MediaElement mediaElementForSpeech;
-    SpeechSynthesizer speechSynthesizer;
-    Grid overlayGrid;
-    SpeechRecognizer speechRecognizer;
-    Guid currentPhotoId;
-    #endregion // ALREADY_SEEN_THIS_CODE
-
     async Task AddFaceBasedTagsToPhotoAsync(PhotoResult photoResult)
     {
       FaceServiceClient client = new FaceServiceClient(
@@ -307,5 +296,36 @@
         }
       }
     }
+    SpeechSynthesisStream speechMediaStream;
+    MediaElement mediaElementForSpeech;
+    SpeechSynthesizer speechSynthesizer;
+    Grid overlayGrid;
+    SpeechRecognizer speechRecognizer;
+    Guid currentPhotoId;
+    #endregion // ALREADY_SEEN_THIS_CODE
+
+    public async Task<Rect?> ProcessCameraFrameAsync(SoftwareBitmap bitmap)
+    {
+      if (this.faceDetector == null)
+      {
+        this.faceDetector = await FaceDetector.CreateAsync();
+      }
+      var result = await this.faceDetector.DetectFacesAsync(bitmap);
+
+      this.photoControl.Switch(result?.Count > 0);
+
+      Rect? returnValue = null;
+
+      if (result?.Count > 0)
+      {
+        returnValue = new Rect(
+          (double)result[0].FaceBox.X / bitmap.PixelWidth,
+          (double)result[0].FaceBox.Y / bitmap.PixelHeight,
+          (double)result[0].FaceBox.Width / bitmap.PixelWidth,
+          (double)result[0].FaceBox.Height / bitmap.PixelHeight);
+      }
+      return (returnValue);
+    }
+    FaceDetector faceDetector;
   }
 }
