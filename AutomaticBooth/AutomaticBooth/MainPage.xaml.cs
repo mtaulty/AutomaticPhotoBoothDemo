@@ -404,7 +404,10 @@
 
       await dialog.ShowAsync();
 
-      // This GUID is my (free, trial) API key, please don't steal it :-)
+      // Note - I'll be invalidating this key after I publish to github
+      // so please get your own key from 
+      // https://www.microsoft.com/cognitive-services/ 
+      // to make this code work.
       VerificationClient verificationClient =
         new VerificationClient("8bfa384b6ca64ded9069a07f3c60510f");
 
@@ -417,7 +420,11 @@
       // I have already registered my voice speaking this phrase with
       // the cloud and I got back this GUID. I had to repeat it 3 
       // times.
-      // Send our speech to the cloud to check for a match.
+      // You would need to do similar on your Cognitive Service 
+      // account to set this up.
+      // If you look in my Cognitive Wrapper project on github,
+      // you'll find some simple test clients that help you do that.
+      // https://github.com/mtaulty/CognitiveSpeechWrapper
       var verificationResult =
         await verificationClient.VerifyRecordedSpeechForProfileIdAsync(
           Guid.Parse("7cf0f0a8-c6a2-4fe0-b806-5272f89e00c8"),
