@@ -143,7 +143,10 @@
     async Task AddEmotionBasedTagsToPhotoAsync(PhotoResult photoResult)
     {
       // The proxy that makes it easier to call the REST API.
-      // This is my key, please don't steal it :-)
+      // Note - I'll be invalidating this key after I publish to github
+      // so please get your own key from 
+      // https://www.microsoft.com/cognitive-services/ 
+      // to make this code work.
       EmotionServiceClient client = new EmotionServiceClient(
         "5fa514a9e129412f9848efef5ee1e444");
 
@@ -183,6 +186,10 @@
     }
     async Task AddFaceBasedTagsToPhotoAsync(PhotoResult photoResult)
     {
+      // Note - I'll be invalidating this key after I publish to github
+      // so please get your own key from 
+      // https://www.microsoft.com/cognitive-services/ 
+      // to make this code work.
       FaceServiceClient client = new FaceServiceClient(
         "76811b8d4dd64b9bb54366502b0615cc");
 
